@@ -106,7 +106,7 @@ public class TicketServiceImplTest {
 		Optional<SeatHold> hold = ticketService.findAndHoldSeats(1);
 		Map<String, SeatHold> holdedSeats;
 
-		//Testing retention of Holded seats before timeout
+		// Testing retention of Holded seats before timeout
 		holdedSeats = ticketService.getHoldedSeats();
 		for (Entry<String, SeatHold> holdedSeat : holdedSeats.entrySet()) {
 			assertEquals(hold.get().getId(), holdedSeat.getKey());
@@ -122,47 +122,37 @@ public class TicketServiceImplTest {
 			e.printStackTrace();
 		}
 
-		//Testing  release of holded seats in  Maps after timeout
+		// Testing release of holded seats in Maps after timeout
 		holdedSeats = ticketService.getHoldedSeats();
 		assertFalse(holdedSeats.containsKey(hold.get().getId()));
 	}
-	
+
 	@Test
-	public void testReservation(){
-		
-		
-		Map<String,ReserveSeat> reservedSeats;
-	
-		//Testing reservation of 1 seat with seatId starting at 2
+	public void testReservation() {
+
+		Map<String, ReserveSeat> reservedSeats;
+
+		// Testing reservation of 1 seat with seatId starting at 2
 		Optional<SeatHold> hold1 = ticketService.findAndHoldSeats(2);
 		ticketService.reserveSeats(hold1.get().getId());
-		reservedSeats= ticketService.getReservedSeats();
-		
-		for (Entry<String,ReserveSeat> reserveSeat : reservedSeats.entrySet()){
+		reservedSeats = ticketService.getReservedSeats();
+
+		for (Entry<String, ReserveSeat> reserveSeat : reservedSeats.entrySet()) {
 			assertEquals(hold1.get().getId(), reserveSeat.getKey());
 			assertEquals(1, reserveSeat.getValue().getSeatId());
 			assertEquals(2, reserveSeat.getValue().getNumSeats());
 			assertEquals(hold1.get().getId(), reserveSeat.getValue().getId());
 		}
-		
-		//Testing Second Reservation of 2 Seats. of reservation of first on  
-		
+
+		// Testing Second Reservation of 2 Seats. of reservation of first on
+
 		Optional<SeatHold> hold2 = ticketService.findAndHoldSeats(2);
 		ticketService.reserveSeats(hold2.get().getId());
-		reservedSeats= ticketService.getReservedSeats();
-		
+		reservedSeats = ticketService.getReservedSeats();
+
 		ReserveSeat secondReservation = reservedSeats.get(hold2.get().getId());
 		assertEquals(3, secondReservation.getSeatId());
 		assertEquals(2, secondReservation.getNumSeats());
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 	}
 }

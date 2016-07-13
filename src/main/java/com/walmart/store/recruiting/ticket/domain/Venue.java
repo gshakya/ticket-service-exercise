@@ -6,51 +6,59 @@ package com.walmart.store.recruiting.ticket.domain;
  */
 public class Venue {
 
-    private final int id;
-    private final int rows;
-    private final int seatsPerRow;
+	private final int id;
+	private final int rows;
+	private final int seatsPerRow;
+	private int nextAvailableSeat;
 
-    public Venue(int id, int rows, int seatsPerRow) {
-        this.id = id;
-        this.rows = rows;
-        this.seatsPerRow = seatsPerRow;
-    }
+	public Venue(int id, int rows, int seatsPerRow) {
+		this.id = id;
+		this.rows = rows;
+		this.seatsPerRow = seatsPerRow;
+	}
 
+	
 
-    /**
-     * @return the number of rows of seats in the venue
-     */
-    public int getRows() {
-        return rows;
-    }
+	public int getNextAvailableSeat() {
+		return nextAvailableSeat;
+	}
 
-    /**
-     * @return the number of seats in each row
-     */
-    public int getSeatsPerRow() {
-        return seatsPerRow;
-    }
+	/**
+	 * @return the number of rows of seats in the venue
+	 */
+	public int getRows() {
+		return rows;
+	}
 
-    /**
-     * @return the total number of seats in the venue
-     */
-    public int getMaxSeats() {
-        return rows * seatsPerRow;
-    }
+	/**
+	 * @return the number of seats in each row
+	 */
+	public int getSeatsPerRow() {
+		return seatsPerRow;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	/**
+	 * @return the total number of seats in the venue
+	 */
+	public int getMaxSeats() {
+		return rows * seatsPerRow;
+	}
 
-        Venue venue = (Venue) o;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 
-        return id == venue.id;
-    }
+		Venue venue = (Venue) o;
 
-    @Override
-    public int hashCode() {
-        return id;
-    }
+		return id == venue.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return id;
+	}
 
 }

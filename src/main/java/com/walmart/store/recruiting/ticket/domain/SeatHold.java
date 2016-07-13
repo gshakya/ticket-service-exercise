@@ -7,6 +7,7 @@ package com.walmart.store.recruiting.ticket.domain;
 public class SeatHold {
 
     private String id;
+    private int seatId;
     private int numSeats;
 
     /**

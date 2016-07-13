@@ -1,17 +1,18 @@
 package com.walmart.store.recruiting.ticket.service.impl;
 
-import com.walmart.store.recruiting.ticket.service.TicketService;
-import com.walmart.store.recruiting.ticket.domain.SeatHold;
-import com.walmart.store.recruiting.ticket.domain.Venue;
-import org.junit.Before;
-import org.junit.Test;
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.walmart.store.recruiting.ticket.domain.SeatHold;
+import com.walmart.store.recruiting.ticket.domain.Venue;
+import com.walmart.store.recruiting.ticket.service.TicketService;
 
 /**
  * A few basic tests for the TicketService.

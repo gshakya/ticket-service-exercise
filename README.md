@@ -1,4 +1,27 @@
 # ticket-service-exercise
+Modified by: Gunjan Shakya
+Email: gunjan.shakya@outlook.com
+Phone: 641-919-3469
+
+1. **Seat holds expire.**  After some period of time, held seats that are not reserved are returned to the pool of available seats.
+	-> Created a Inner Class HoldTimer to handle the timeout. 
+	-> Timeout set as 3 Seconds	
+	-> Added a new variable (nextAvailableSeatId) to indicate the next available Seats
+	-> The available Seats and nextAvailableSeatId will increase or decrease depending upon the holded seats and Reserved Seat
+	-> Known bug 
+		-> if a user holds some no of seat and within the hold timeout period if any another user holds and reserves some seat
+		   the holded seats by earlier user would be released but other users won't be able be reserve the same seat, and will also 
+		   changes the nextAvailableSeat to already reserved seat.
+		-> Probable solution: while releasing the holded seats recheck the reserved seat map and reassign the SeatId if the changes.
+	
+2. **Seats are assigned together.** Seats and rows are numbered. Seats are held and reserved in blocks. 
+	-> Assumption: Each Venue has seat orders as follows
+				1-- 2--3 --4 --5 --6 --7 --8
+				9--10--11--12--13--14--15--16
+	-> To represent the seats in the reservation. SeatId and no of seats reserved are added
+	-> To display reserved seats Interface is extend to return reservedSeats (i.e. map of ReserveSeat)
+	-> reservedSeats has details of ReservationID , SeatId and no of Seats Reserved.
+
 
 Implement a simple ticket service that facilitates the discovery, temporary hold, and final reservation of seats within a high-demand performance venue.
 

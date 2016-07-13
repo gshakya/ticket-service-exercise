@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.walmart.store.recruiting.ticket.domain.ReserveSeat;
 import com.walmart.store.recruiting.ticket.domain.SeatHold;
 import com.walmart.store.recruiting.ticket.domain.Venue;
 import com.walmart.store.recruiting.ticket.service.TicketService;
@@ -16,15 +17,19 @@ public class TicketServiceImpl implements TicketService {
 
 	private int seatsAvailable;
 	private int seatsReserved;
+	private final int HOLD_TIME_OUT = 3000;
 
-	private int nextAvailableSeat;
+	// Assuming each seat is given an numerical number as Id which is in
+	// ascending order from first to last in the venue
+	private int nextAvailableSeatId;
 
 	// converted to ConcurrentHashMap for thread Safety
 	private Map<String, SeatHold> seatHoldMap = new ConcurrentHashMap<>();
+	private Map<String, ReserveSeat> reservedSeatMap = new ConcurrentHashMap<>();
 
 	public TicketServiceImpl(Venue venue) {
 		seatsAvailable = venue.getMaxSeats();
-		nextAvailableSeat = venue.getNextAvailableSeat();
+		nextAvailableSeatId = 1;
 	}
 
 	@Override
@@ -36,8 +41,8 @@ public class TicketServiceImpl implements TicketService {
 		return this.seatsReserved;
 	}
 
-	public int getNextAvailableSeat() {
-		return nextAvailableSeat;
+	public int getNextAvailableSeatId() {
+		return nextAvailableSeatId;
 	}
 
 	@Override
@@ -48,11 +53,11 @@ public class TicketServiceImpl implements TicketService {
 
 		if (seatsAvailable >= numSeats) {
 			String holdId = generateId();
-			SeatHold seatHold = new SeatHold(holdId, numSeats);
+			SeatHold seatHold = new SeatHold(holdId, nextAvailableSeatId, numSeats);
 			optionalSeatHold = Optional.of(seatHold);
 			seatHoldMap.put(holdId, seatHold);
 			seatsAvailable -= numSeats;
-			nextAvailableSeat += numSeats;
+			nextAvailableSeatId += numSeats;
 			HoldTimer h = new HoldTimer(holdId);
 			h.start();
 
@@ -69,8 +74,26 @@ public class TicketServiceImpl implements TicketService {
 		if (seatHold != null) {
 			seatsReserved += seatHold.getNumSeats();
 			optionalReservation = Optional.of(seatHold.getId());
+
+			// Create Reserved Seat object
+			ReserveSeat reserveSeat = new ReserveSeat(seatHold);
+
+			
+			
+			// -----------Exisiting Bug--------
+			// if a user holds some no of seat and within the hold timeout
+			// period if any another user holds and reserves some seat
+			// the holded seats by earlier user would be released but other
+			// users won't be able be reserve the same seat.
+			
+			// Place the holded Seat from holdmap to Reserve Map
+			reservedSeatMap.put(seatHoldId, reserveSeat);
 			seatHoldMap.remove(seatHoldId);
 
+		} else {
+			// Indicates the hold id is not available
+			System.out.println("Log:--- Hold Id not found or timed out");
+			
 		}
 
 		return optionalReservation;
@@ -80,7 +103,7 @@ public class TicketServiceImpl implements TicketService {
 		return UUID.randomUUID().toString();
 	}
 
-	// Inner Class created for holding timer
+	// Inner Class created for hold timing
 
 	class HoldTimer extends Thread {
 		private String holdId;
@@ -92,19 +115,25 @@ public class TicketServiceImpl implements TicketService {
 		public void run() {
 
 			try {
-				Thread.sleep(3000); // 3 second wait
+				Thread.sleep(HOLD_TIME_OUT); // 3 second wait
 			} catch (InterruptedException ex) {
 				Thread.currentThread().interrupt();
 			}
-			removeHoldSeats(seatHoldMap.get(holdId).getNumSeats());
-			seatHoldMap.remove(holdId);
+			if (seatHoldMap.containsKey(holdId)) {
+				// Remove only if the holdId
+				// is in map, will be remove
+				// if the holded seats are
+				// reserved
+				removeHoldSeats(seatHoldMap.get(holdId).getNumSeats());
+				seatHoldMap.remove(holdId);
+			}
+
 		}
 
 		public synchronized void removeHoldSeats(int seats) { //
 			seatsAvailable += seats;
-			nextAvailableSeat -= seats;
+			nextAvailableSeatId -= seats;
 
 		}
 	}
-
 }

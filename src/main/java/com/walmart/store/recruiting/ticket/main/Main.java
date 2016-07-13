@@ -9,27 +9,33 @@ import com.walmart.store.recruiting.ticket.service.impl.TicketServiceImpl;
 public class Main {
 	public static void main(String[] args) {
 		TicketServiceImpl tImp = new TicketServiceImpl(new Venue(1, 5, 10));
-		System.out.println("Next Available Seat: "+ tImp.getNextAvailableSeat());
-		System.out.println("Total Available Seat: "+ tImp.numSeatsAvailable());
-		
-	
-		
+		System.out.println("Next Available Seat: " + tImp.getNextAvailableSeatId());
+		System.out.println("Total Available Seat: " + tImp.numSeatsAvailable());
+
 		Optional<SeatHold> hold = tImp.findAndHoldSeats(10);
-		
-	
-		System.out.println("Next Available Seat: "+ tImp.getNextAvailableSeat());
-		System.out.println("Total Available Seat: "+ tImp.numSeatsAvailable());
-		
+
+		System.out.println("Next Available Seat: " + tImp.getNextAvailableSeatId());
+		System.out.println("Total Available Seat: " + tImp.numSeatsAvailable());
+
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		System.out.println("Next Available Seat: "+ tImp.getNextAvailableSeat());
-		System.out.println("Total Available Seat: "+ tImp.numSeatsAvailable());
+
+		System.out.println("Next Available Seat: " + tImp.getNextAvailableSeatId());
+		System.out.println("Total Available Seat: " + tImp.numSeatsAvailable());
 		tImp.reserveSeats(hold.get().getId());
+
+		System.out.println("Next Available Seat: " + tImp.getNextAvailableSeatId());
+		System.out.println("Total Available Seat: " + tImp.numSeatsAvailable());
+
+		Optional<SeatHold> hold1 = tImp.findAndHoldSeats(10);
+		tImp.reserveSeats(hold1.get().getId());
+
+		System.out.println("Next Available Seat: " + tImp.getNextAvailableSeatId());
+		System.out.println("Total Available Seat: " + tImp.numSeatsAvailable());
 
 	}
 }

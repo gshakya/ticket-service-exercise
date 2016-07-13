@@ -82,4 +82,19 @@ public class TicketServiceImplTest {
         assertTrue(!hold.isPresent());
     }
 
+    @Test
+    public void testHoldRelease(){
+    	Optional<SeatHold> hold = ticketService.findAndHoldSeats(1);
+    	// indicate the seat is holded
+    	assertEquals(9, ticketService.numSeatsAvailable());
+    	try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	//indicate the seat is released
+    	assertEquals(10, ticketService.numSeatsAvailable());
+    	
+    }
 }

@@ -9,7 +9,6 @@ public class Venue {
 	private final int id;
 	private final int rows;
 	private final int seatsPerRow;
-	private int nextAvailableSeat;
 
 	public Venue(int id, int rows, int seatsPerRow) {
 		this.id = id;
@@ -18,11 +17,6 @@ public class Venue {
 	}
 
 	
-
-	public int getNextAvailableSeat() {
-		return nextAvailableSeat;
-	}
-
 	/**
 	 * @return the number of rows of seats in the venue
 	 */

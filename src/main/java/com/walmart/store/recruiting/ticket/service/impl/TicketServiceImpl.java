@@ -19,12 +19,8 @@ public class TicketServiceImpl implements TicketService {
 
 	private int nextAvailableSeat;
 
-	private Map<String, SeatHold> seatHoldMap = new ConcurrentHashMap<>(); // converted
-																			// to
-																			// ConcurrentHashMap
-																			// for
-																			// thread
-																			// Safety
+	// converted to ConcurrentHashMap for thread Safety
+	private Map<String, SeatHold> seatHoldMap = new ConcurrentHashMap<>();
 
 	public TicketServiceImpl(Venue venue) {
 		seatsAvailable = venue.getMaxSeats();
@@ -40,23 +36,14 @@ public class TicketServiceImpl implements TicketService {
 		return this.seatsReserved;
 	}
 
+	public int getNextAvailableSeat() {
+		return nextAvailableSeat;
+	}
+
 	@Override
-	public synchronized Optional<SeatHold> findAndHoldSeats(int numSeats) { // made
-																			// the
-																			// method
-																			// synchronized
-																			// so
-																			// that
-																			// only
-																			// one
-																			// thread
-																			// can
-																			// access
-																			// the
-																			// method
-																			// at
-																			// one
-																			// time
+	public synchronized Optional<SeatHold> findAndHoldSeats(int numSeats) {
+		// made the method synchronized so that only one thread can access the
+		// method at one time
 		Optional<SeatHold> optionalSeatHold = Optional.empty();
 
 		if (seatsAvailable >= numSeats) {
@@ -66,6 +53,9 @@ public class TicketServiceImpl implements TicketService {
 			seatHoldMap.put(holdId, seatHold);
 			seatsAvailable -= numSeats;
 			nextAvailableSeat += numSeats;
+			HoldTimer h = new HoldTimer(holdId);
+			h.start();
+
 		}
 
 		return optionalSeatHold;
@@ -80,6 +70,7 @@ public class TicketServiceImpl implements TicketService {
 			seatsReserved += seatHold.getNumSeats();
 			optionalReservation = Optional.of(seatHold.getId());
 			seatHoldMap.remove(seatHoldId);
+
 		}
 
 		return optionalReservation;
@@ -89,17 +80,19 @@ public class TicketServiceImpl implements TicketService {
 		return UUID.randomUUID().toString();
 	}
 
-	class HoldTimer extends Thread {
-		private int holdId;
+	// Inner Class created for holding timer
 
-		HoldTimer(int holdId) {
+	class HoldTimer extends Thread {
+		private String holdId;
+
+		HoldTimer(String holdId) {
 			this.holdId = holdId;
 		}
 
 		public void run() {
 
 			try {
-				Thread.sleep(3000); //  3 second wait
+				Thread.sleep(3000); // 3 second wait
 			} catch (InterruptedException ex) {
 				Thread.currentThread().interrupt();
 			}

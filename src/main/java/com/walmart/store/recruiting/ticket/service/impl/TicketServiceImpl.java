@@ -98,6 +98,18 @@ public class TicketServiceImpl implements TicketService {
 
 		return optionalReservation;
 	}
+	
+	@Override
+	public Map<String, ReserveSeat> getReservedSeats() {
+		// TODO Auto-generated method stub
+		return reservedSeatMap;
+	}
+
+	@Override
+	public Map<String, SeatHold> getHoldedSeats() {
+		// TODO Auto-generated method stub
+		return seatHoldMap;
+	}
 
 	private String generateId() {
 		return UUID.randomUUID().toString();
@@ -136,4 +148,6 @@ public class TicketServiceImpl implements TicketService {
 
 		}
 	}
+
+	
 }

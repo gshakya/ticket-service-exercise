@@ -1,8 +1,10 @@
 package com.walmart.store.recruiting.ticket.service;
 
-import com.walmart.store.recruiting.ticket.domain.SeatHold;
-
+import java.util.Map;
 import java.util.Optional;
+
+import com.walmart.store.recruiting.ticket.domain.ReserveSeat;
+import com.walmart.store.recruiting.ticket.domain.SeatHold;
 
 /**
  * An interface for querying and reserving seats from a single static venue.
@@ -31,5 +33,10 @@ public interface TicketService {
      * @return a reservation confirmation code, if the reservation has not expired.
      */
     Optional<String> reserveSeats(String seatHoldId);
+    
+    Map<String,ReserveSeat> getReservedSeats();
+    
+    Map<String, SeatHold> getHoldedSeats();
+    
 
 }
